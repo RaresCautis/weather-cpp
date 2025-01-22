@@ -30,6 +30,8 @@ FetchContent_MakeAvailable(ftxui)
 # Add your executable
 add_executable(weather-cpp src/main.cpp)
 target_sources(weather-cpp PRIVATE src/components/menu.cpp)
+target_sources(weather-cpp PRIVATE src/components/helpers.cpp)
+target_sources(weather-cpp PRIVATE src/components/window.cpp)
 target_include_directories(weather-cpp PRIVATE src src/components)
 
 # Link FTXUI libraries
