@@ -16,19 +16,9 @@ int main() {
     auto window = WindowComponent(APP_TITLE);
 
     int currentTab = 0;
-
-    auto menuCallback = [&](MenuButtons buttonPressed) {
-        switch (buttonPressed) {
-        case MenuButtons::Exit:
-            screen.Exit();
-            break;
-        case MenuButtons::Nothing:
-            break;
-        }
-    };
-
-    auto mainMenu = MenuComponent(menuCallback);
-
+    auto mainMenu =
+        MenuComponent({{"Do Nothing", [] {}},
+                       {"Exit", [&screen] { screen.Exit(); }}}); // nolint
     std::string ascii_art = R"(
                 |
                 |
@@ -99,7 +89,6 @@ int main() {
         });
     });
 
-    // Components availablePages = {mainMenu.getComponent()};
     Components availablePages = {component};
     auto mainPages = Container::Tab(availablePages, &currentTab);
 

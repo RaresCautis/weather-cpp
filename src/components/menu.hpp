@@ -7,21 +7,35 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/string.hpp>
 
-enum class MenuButtons {
-    Nothing = 0,
-    Exit = 1,
+namespace menucomp {
+
+using namespace ftxui;
+
+using menuCallback = std::function<void()>;
+
+struct SingleMenuEntry {
+    std::string label;
+    menuCallback callback;
 };
+
+struct MenuEntries {
+    std::vector<std::string> labels;
+    std::vector<menuCallback> callbacks;
+};
+
+}; // namespace menucomp
 
 class MenuComponent {
   public:
-    MenuComponent(std::function<void(MenuButtons)> cb);
+    MenuComponent(std::vector<menucomp::SingleMenuEntry> newEntries);
     ftxui::Component getComponent();
 
   private:
-    std::vector<std::string> entries;
+    void addEntries(std::vector<menucomp::SingleMenuEntry>& newEntries);
+    void setupOptions();
+    menucomp::MenuEntries entries;
     int selected;
     ftxui::MenuOption option;
-    std::function<void(MenuButtons)> callback;
 };
 
 #endif

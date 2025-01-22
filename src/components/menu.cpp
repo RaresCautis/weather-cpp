@@ -1,25 +1,31 @@
 #include "menu.hpp"
 #include "helpers.hpp"
-#include <chrono>
-#include <ftxui/component/component_options.hpp>
-#include <ftxui/dom/elements.hpp>
 
-using namespace ftxui;
+using namespace menucomp;
 
-MenuComponent::MenuComponent(std::function<void(MenuButtons)> cb) {
-    callback = cb;
-    selected = 0;
-    entries = {
-        "Do Nothing",
-        "Exit",
-    };
+MenuComponent::MenuComponent(std::vector<SingleMenuEntry> newEntries) {
+    addEntries(newEntries);
+    setupOptions();
+}
 
-    auto onMenuSelect = [&] {
-        MenuButtons selectedButton = static_cast<MenuButtons>(selected);
-        callback(selectedButton);
-    };
+Component MenuComponent::getComponent() {
+    auto menu = Menu(&entries.labels, &selected, option);
 
+    return makeClickableComponent(menu);
+}
+
+void MenuComponent::addEntries(std::vector<SingleMenuEntry>& newEntries) {
+    for (auto entry : newEntries) {
+        entries.labels.push_back(entry.label);
+        entries.callbacks.push_back(entry.callback);
+    }
+}
+
+void MenuComponent::setupOptions() {
+    auto onMenuSelect = [this] { entries.callbacks[selected](); };
     option.on_enter = onMenuSelect;
+
+    selected = 0;
     option.focused_entry = &selected;
 
     AnimatedColorOption colorFg;
@@ -47,10 +53,4 @@ MenuComponent::MenuComponent(std::function<void(MenuButtons)> cb) {
         }
         return e;
     };
-}
-
-Component MenuComponent::getComponent() {
-    auto menu = Menu(&entries, &selected, option);
-
-    return makeClickableComponent(menu);
 }
