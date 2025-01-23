@@ -44,6 +44,7 @@ target_sources(weather-cpp PRIVATE src/components/menu.cpp)
 target_sources(weather-cpp PRIVATE src/components/helpers.cpp)
 target_sources(weather-cpp PRIVATE src/components/serializers.cpp)
 target_sources(weather-cpp PRIVATE src/components/window.cpp)
+target_sources(weather-cpp PRIVATE src/components/config.cpp)
 target_include_directories(weather-cpp PRIVATE src src/components)
 
 # Link libraries
