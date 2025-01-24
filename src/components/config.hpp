@@ -3,6 +3,8 @@
 #include <ftxui/component/component.hpp>
 
 #define APP_TITLE "weather-cpp"
+// TODO: look into paths, this is not good. Look at different OS paths
+#define STYLE_CONFIG_LOCATION "/home/cobel/.config/weather-cpp/style.json"
 
 static std::unordered_map<std::string, ftxui::Color> defaultColors = {
     {

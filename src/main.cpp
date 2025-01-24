@@ -1,3 +1,4 @@
+#include "components/config.hpp"
 #include "components/menu.hpp"
 #include "components/window.hpp"
 #include <ftxui/component/captured_mouse.hpp>
@@ -14,6 +15,8 @@ using namespace ftxui;
 int main() {
     auto screen = ScreenInteractive::Fullscreen();
     auto window = WindowComponent(APP_TITLE);
+
+    initializeConfig();
 
     int currentTab = 0;
     auto mainMenu =

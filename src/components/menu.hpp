@@ -9,8 +9,6 @@
 
 namespace menucomp {
 
-using namespace ftxui;
-
 using menuCallback = std::function<void()>;
 
 struct SingleMenuEntry {

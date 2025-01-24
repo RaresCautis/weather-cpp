@@ -1,7 +1,9 @@
 #include "menu.hpp"
+#include "colorManager.hpp"
 #include "helpers.hpp"
 
 using namespace menucomp;
+using namespace ftxui;
 
 MenuComponent::MenuComponent(std::vector<SingleMenuEntry> newEntries) {
     addEntries(newEntries);
@@ -29,8 +31,9 @@ void MenuComponent::setupOptions() {
     option.focused_entry = &selected;
 
     AnimatedColorOption colorFg;
-    auto tx = Color::RGB(205, 214, 244);
-    auto curs = Color::RGB(250, 179, 135);
+    ColorManager& colMan = ColorManager::getInstance();
+    auto tx = colMan.get("text");
+    auto curs = colMan.get("highlight");
     colorFg.active = curs;
     colorFg.inactive = tx;
     colorFg.enabled = true;

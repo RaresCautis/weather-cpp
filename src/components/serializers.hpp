@@ -5,12 +5,12 @@
 
 namespace serializers {
 
-using colorMap = std::unordered_map<std::string, ftxui::Color>;
+using colorArray = std::vector<std::pair<std::string, ftxui::Color>>;
 
 }; // namespace serializers
 
-template <> struct nlohmann::adl_serializer<serializers::colorMap> {
-    static serializers::colorMap from_json(const nlohmann::json& colList);
+template <> struct nlohmann::adl_serializer<serializers::colorArray> {
+    static serializers::colorArray from_json(const nlohmann::json& colList);
 };
 
 #endif
