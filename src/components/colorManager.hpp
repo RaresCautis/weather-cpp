@@ -1,5 +1,6 @@
 #ifndef COLORMANAGER_H
 #define COLORMANAGER_H
+#include <colorType.hpp>
 #include <ftxui/dom/elements.hpp>
 
 class ColorManager {
@@ -7,15 +8,14 @@ class ColorManager {
     static ColorManager& getInstance();
 
     void
-    initializeColors(std::vector<std::pair<std::string, ftxui::Color>>& colors);
+    initializeColors(std::vector<std::pair<ColorType, ftxui::Color>>& colors);
 
-    void
-    changeColors(std::vector<std::pair<std::string, ftxui::Color>>& colors);
+    void changeColors(std::vector<std::pair<ColorType, ftxui::Color>>& colors);
 
-    ftxui::Color& get(std::string colorName);
+    ftxui::Color& get(ColorType colorType);
 
   private:
-    std::unordered_map<std::string, ftxui::Color> colorMap;
+    std::unordered_map<ColorType, ftxui::Color> colorMap;
 
     ColorManager();
     ColorManager(const ColorManager&) = delete;

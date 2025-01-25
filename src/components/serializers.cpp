@@ -1,4 +1,5 @@
 #include "serializers.hpp"
+#include "colorType.hpp"
 
 using namespace std;
 using namespace nlohmann;
@@ -26,10 +27,15 @@ nlohmann::adl_serializer<serializers::colorArray>::from_json(
 
     for (auto color : colList) {
         std::string name = color.at("name");
+        auto type = stringToColorType(name);
+
+        if (!type)
+            continue;
+
         std::string value = color.at("value");
 
         newColorMap.push_back({
-            name,
+            *type,
             getColorFromHex(value),
         });
     }

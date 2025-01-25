@@ -12,24 +12,24 @@ ColorManager& ColorManager::getInstance() {
     return instance;
 }
 
-void ColorManager::initializeColors(vector<pair<string, Color>>& colors) {
+void ColorManager::initializeColors(vector<pair<ColorType, Color>>& colors) {
     for (auto col : colors) {
-        auto name = col.first;
+        auto color = col.first;
         auto value = col.second;
 
-        colorMap[name] = value;
+        colorMap[color] = value;
     }
 }
 
-void ColorManager::changeColors(vector<pair<string, Color>>& colors) {
+void ColorManager::changeColors(vector<pair<ColorType, Color>>& colors) {
     for (auto col : colors) {
-        auto name = col.first;
+        auto color = col.first;
         auto value = col.second;
 
-        if (colorMap.find(name) != colorMap.end())
-            colorMap[name] = value;
+        if (colorMap.find(color) != colorMap.end())
+            colorMap[color] = value;
     }
 }
 
 // TODO: Rethink this and error handle
-Color& ColorManager::get(string colorName) { return colorMap[colorName]; }
+Color& ColorManager::get(ColorType colorType) { return colorMap[colorType]; }

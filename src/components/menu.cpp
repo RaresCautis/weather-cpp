@@ -32,8 +32,8 @@ void MenuComponent::setupOptions() {
 
     AnimatedColorOption colorFg;
     ColorManager& colMan = ColorManager::getInstance();
-    auto tx = colMan.get("text");
-    auto curs = colMan.get("highlight");
+    auto tx = colMan.get(ColorType::TEXT);
+    auto curs = colMan.get(ColorType::HIGHLIGHT);
     colorFg.active = curs;
     colorFg.inactive = tx;
     colorFg.enabled = true;

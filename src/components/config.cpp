@@ -12,8 +12,6 @@ serializers::colorArray readColorJson() {
     std::ifstream styleFile(STYLE_CONFIG_LOCATION);
     auto jsonData = json::parse(styleFile);
 
-    // return {{"text", ftxui::Color::RGB(0, 0, 0)}};
-
     return jsonData.template get<serializers::colorArray>();
 }
 }; // namespace
@@ -21,5 +19,6 @@ serializers::colorArray readColorJson() {
 void initializeConfig() {
     ColorManager& colMan = ColorManager::getInstance();
     auto colors = readColorJson();
-    colMan.initializeColors(colors);
+    colMan.initializeColors(defaultColors);
+    colMan.changeColors(colors);
 }
