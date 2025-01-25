@@ -1,6 +1,6 @@
-#include "menu.hpp"
-#include "colorManager.hpp"
-#include "helpers.hpp"
+#include <colorManager.hpp>
+#include <helpers.hpp>
+#include <menu.hpp>
 
 using namespace menucomp;
 using namespace ftxui;

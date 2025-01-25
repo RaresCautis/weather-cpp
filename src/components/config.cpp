@@ -1,8 +1,8 @@
-#include "config.hpp"
-#include "colorManager.hpp"
-#include "serializers.hpp"
+#include <colorManager.hpp>
+#include <config.hpp>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <serializers.hpp>
 
 namespace {
 using namespace nlohmann;

@@ -1,8 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-#include "colorType.hpp"
-#include "serializers.hpp"
+#include <colorType.hpp>
 #include <ftxui/component/component.hpp>
+#include <serializers.hpp>
 
 #define APP_TITLE "weather-cpp"
 // TODO: look into paths, this is not good. Look at different OS paths

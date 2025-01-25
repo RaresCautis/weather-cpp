@@ -1,5 +1,5 @@
-#include "serializers.hpp"
-#include "colorType.hpp"
+#include <colorType.hpp>
+#include <serializers.hpp>
 
 using namespace std;
 using namespace nlohmann;

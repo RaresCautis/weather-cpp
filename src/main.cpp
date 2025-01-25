@@ -1,6 +1,6 @@
-#include "components/config.hpp"
-#include "components/menu.hpp"
-#include "components/window.hpp"
+#include <components/config.hpp>
+#include <components/menu.hpp>
+#include <components/window.hpp>
 #include <ftxui/component/captured_mouse.hpp>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
