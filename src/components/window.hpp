@@ -4,24 +4,24 @@
 #include <ftxui/dom/elements.hpp>
 
 enum class ComponentPosition {
-    topLeft,
-    topRight,
+    left,
+    top,
     center,
-    bottomLeft,
-    bottomRight,
+    bottom,
+    right,
 };
 
 class WindowComponent {
   public:
     WindowComponent(std::string newTitle);
-    ftxui::Component getWindow();
-    void setComponent(ComponentPosition position, ftxui::Component comp);
-    void deleteComponent(ComponentPosition position);
+    ftxui::Component getComponent();
+    void setChild(ComponentPosition position, ftxui::Component comp);
+    void deleteChild(ComponentPosition position);
 
   private:
-    ftxui::Element getComponent(ComponentPosition position);
-    ftxui::Component getCenterComponent(ComponentPosition position);
-    std::unordered_map<ComponentPosition, ftxui::Component> components;
+    ftxui::Element getChild(ComponentPosition position);
+    ftxui::Component getCenterChild();
+    std::unordered_map<ComponentPosition, ftxui::Component> children;
     std::string windowTitle;
 };
 

@@ -8,8 +8,6 @@
 #include <string>
 #include <thread>
 
-#define APP_TITLE "weather-cpp"
-
 using namespace ftxui;
 
 int main() {
@@ -19,9 +17,10 @@ int main() {
     initializeConfig();
 
     int currentTab = 0;
-    auto mainMenu =
-        MenuComponent({{"Do Nothing", [] {}},
-                       {"Exit", [&screen] { screen.Exit(); }}}); // nolint
+    auto mainMenu = MenuComponent({
+        {"Nothing", [] {}},
+        {"Exit", [&screen] { screen.Exit(); }},
+    });
     std::string ascii_art = R"(
                 |
                 |
@@ -70,7 +69,7 @@ int main() {
             }
         });
 
-    auto ascii_comp = Renderer([&ascii_art] {
+    auto stupidAnimationComponent = Renderer([&ascii_art] {
         std::string cur = "";
         std::vector<Element> v;
         for (auto c : ascii_art) {
@@ -83,20 +82,12 @@ int main() {
         return vbox(v);
     });
 
-    auto comp = mainMenu.getComponent();
-
-    auto component = Renderer(comp, [&] {
-        return vbox({
-            ascii_comp->Render(),
-            comp->Render() | center,
-        });
-    });
-
-    Components availablePages = {component};
+    Components availablePages = {mainMenu.getComponent()};
     auto mainPages = Container::Tab(availablePages, &currentTab);
 
-    window.setComponent(ComponentPosition::center, mainPages);
-    auto mainComponent = window.getWindow();
+    window.setChild(ComponentPosition::top, stupidAnimationComponent);
+    window.setChild(ComponentPosition::center, mainPages);
+    auto mainComponent = window.getComponent();
 
     screen.Loop(mainComponent);
 
