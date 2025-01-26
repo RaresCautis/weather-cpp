@@ -18,10 +18,23 @@ int main() {
 
     initializeConfig();
 
+    Components availablePages;
+
+    auto menuTry = MenuComponent({
+        {"asd", [] {}},
+        {"asd", [] {}},
+        {"asd", [] {}},
+    });
+
+    auto windowTry = WindowComponent("Bucharest");
+    auto compc = menuTry.getComponent();
+    windowTry.setComponent(ComponentPosition::center, compc);
+
     int currentTab = 0;
-    auto mainMenu =
-        MenuComponent({{"Do Nothing", [] {}},
-                       {"Exit", [&screen] { screen.Exit(); }}}); // nolint
+    auto mainMenu = MenuComponent({
+        {"Do Nothing", [&] { currentTab = 1; }},
+        {"Exit", [&screen] { screen.Exit(); }},
+    });
     std::string ascii_art = R"(
                 |
                 |
@@ -92,7 +105,7 @@ int main() {
         });
     });
 
-    Components availablePages = {component};
+    availablePages = {component, windowTry.getWindow()};
     auto mainPages = Container::Tab(availablePages, &currentTab);
 
     window.setComponent(ComponentPosition::center, mainPages);
