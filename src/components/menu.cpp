@@ -4,10 +4,15 @@
 
 using namespace menucomp;
 using namespace ftxui;
+using namespace std;
 
-MenuComponent::MenuComponent(std::vector<SingleMenuEntry> newEntries) {
+MenuComponent::MenuComponent(vector<SingleMenuEntry> newEntries,
+                             optional<AnimatedColorOption> colorFg,
+                             optional<AnimatedColorOption> colorBg,
+                             optional<transformFunc> transformFunc) {
+
     addEntries(newEntries);
-    setupOptions();
+    setupOptions(colorFg, colorBg, transformFunc);
 }
 
 Component MenuComponent::getComponent() {
@@ -23,13 +28,33 @@ void MenuComponent::addEntries(std::vector<SingleMenuEntry>& newEntries) {
     }
 }
 
-void MenuComponent::setupOptions() {
+AnimatedColorOption getDefaultColorFg();
+AnimatedColorOption getDefaultColorBg();
+transformFunc getDefaultTransformFunc();
+
+void MenuComponent::setupOptions(optional<AnimatedColorOption> colorFg,
+                                 optional<AnimatedColorOption> colorBg,
+                                 optional<transformFunc> transformFunc) {
     auto onMenuSelect = [this] { entries.callbacks[selected](); };
     option.on_enter = onMenuSelect;
 
     selected = 0;
     option.focused_entry = &selected;
 
+    AnimatedColorsOption optionColor = {
+        colorBg.value_or(getDefaultColorBg()),
+        colorFg.value_or(getDefaultColorFg()),
+    };
+
+    MenuEntryOption menuOption;
+    menuOption.animated_colors = optionColor;
+
+    option.entries_option = menuOption;
+    option.entries_option.transform =
+        transformFunc.value_or(getDefaultTransformFunc());
+}
+
+AnimatedColorOption getDefaultColorFg() {
     AnimatedColorOption colorFg;
     ColorManager& colMan = ColorManager::getInstance();
     auto tx = colMan.get(ColorType::TEXT);
@@ -38,21 +63,21 @@ void MenuComponent::setupOptions() {
     colorFg.inactive = tx;
     colorFg.enabled = true;
     colorFg.duration = std::chrono::milliseconds(100);
-    AnimatedColorOption colorBg;
-    AnimatedColorsOption optionColor = {colorBg, colorFg};
-    MenuEntryOption menuOption;
-    menuOption.animated_colors = optionColor;
 
-    option.entries_option = menuOption;
-    option.entries_option.transform = [](const EntryState& state) {
+    return colorFg;
+}
+
+AnimatedColorOption getDefaultColorBg() {
+    AnimatedColorOption colorBg;
+
+    return colorBg;
+}
+
+transformFunc getDefaultTransformFunc() {
+    return [](const EntryState& state) {
         Element e = text(state.label) | center;
-        /*auto grad = LinearGradient(90, Color::Red, Color::Blue);
-        double size = state.label.size();
-        double position = 1 / (3 / size);
-        grad.Stop(Color::Blue, 5);*/
         if (state.active) {
             e = e | bold;
-            // e = e | color(grad);
         }
         return e;
     };
