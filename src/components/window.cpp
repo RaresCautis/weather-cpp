@@ -5,53 +5,54 @@ using namespace ftxui;
 WindowComponent::WindowComponent(std ::string newTitle)
     : windowTitle(std::move(newTitle)) {};
 
-Element WindowComponent::getComponent(ComponentPosition position) {
-    if (auto it = components.find(position); it != components.end())
-        return components[position]->Render() | flex;
+Element WindowComponent::getChild(ComponentPosition position) {
+    if (auto it = children.find(position); it != children.end())
+        return children[position]->Render() | flex;
     return filler();
 };
 
-Component WindowComponent::getCenterComponent(ComponentPosition position) {
-    if (auto it = components.find(position); it != components.end())
-        return components[position];
+Component WindowComponent::getCenterChild() {
+    if (auto it = children.find(ComponentPosition::center);
+        it != children.end())
+        return children[ComponentPosition::center];
     return Renderer([] { return filler(); });
 }
 
-Component WindowComponent::getWindow() {
+Component WindowComponent::getComponent() {
     std::string wrappedTitle = "|" + windowTitle + "|";
 
-    // auto centerComp = components[ComponentPosition::center];
-    // centerComp = Renderer([] { return filler(); });
+    // TODO: Move the inbetween fillers to achieve top/bottom alignment
+    // + think about positioning
+    return Renderer(getCenterChild(), [this, wrappedTitle] {
+        return window(text(wrappedTitle),
+                      vbox({
+                          filler(), // THIS
+                          hbox({
+                              filler(),
+                              getChild(ComponentPosition::top),
+                              filler(),
+                          }) | center,
+                          hbox({
 
-    return Renderer(
-        getCenterComponent(ComponentPosition::center), [this, wrappedTitle] {
-            return window(
-                       text(wrappedTitle),
-                       gridbox({
-                           {
-                               getComponent(ComponentPosition::topLeft),
-                               filler(),
-                               getComponent(ComponentPosition::topRight),
-                           },
-                           {
-                               filler(),
-                               getComponent(ComponentPosition::center) | center,
-                               filler(),
-                           },
-                           {
-                               getComponent(ComponentPosition::bottomLeft),
-                               filler(),
-                               getComponent(ComponentPosition::bottomRight),
-                           },
-                       }) | flex_grow) |
-                   flex_grow;
-        });
+                              getChild(ComponentPosition::left),
+                              getChild(ComponentPosition::center),
+                              getChild(ComponentPosition::right),
+                          }) | center,
+                          filler(), // THIS
+                          hbox({
+                              filler(),
+                              getChild(ComponentPosition::bottom),
+                              filler(),
+                          }) | center,
+                      }) | flex_grow) |
+               flex_grow;
+    });
 }
 
-void WindowComponent::setComponent(ComponentPosition position, Component comp) {
-    components[position] = comp;
+void WindowComponent::setChild(ComponentPosition position, Component comp) {
+    children[position] = comp;
 }
 
-void WindowComponent::deleteComponent(ComponentPosition position) {
-    components.erase(position);
+void WindowComponent::deleteChild(ComponentPosition position) {
+    children.erase(position);
 }

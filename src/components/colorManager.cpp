@@ -3,8 +3,6 @@
 using namespace ftxui;
 using namespace std;
 
-// TODO: Maybe implement this as a map from enum to color
-
 ColorManager::ColorManager() {};
 
 ColorManager& ColorManager::getInstance() {

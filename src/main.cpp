@@ -8,8 +8,6 @@
 #include <string>
 #include <thread>
 
-#define APP_TITLE "weather-cpp"
-
 using namespace ftxui;
 
 int main() {
@@ -83,7 +81,7 @@ int main() {
             }
         });
 
-    auto ascii_comp = Renderer([&ascii_art] {
+    auto stupidAnimationComponent = Renderer([&ascii_art] {
         std::string cur = "";
         std::vector<Element> v;
         for (auto c : ascii_art) {
@@ -108,8 +106,9 @@ int main() {
     availablePages = {component, windowTry.getWindow()};
     auto mainPages = Container::Tab(availablePages, &currentTab);
 
-    window.setComponent(ComponentPosition::center, mainPages);
-    auto mainComponent = window.getWindow();
+    window.setChild(ComponentPosition::top, stupidAnimationComponent);
+    window.setChild(ComponentPosition::center, mainPages);
+    auto mainComponent = window.getComponent();
 
     screen.Loop(mainComponent);
 
