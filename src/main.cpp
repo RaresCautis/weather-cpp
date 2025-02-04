@@ -1,6 +1,6 @@
-#include <components/colorManager.hpp>
 #include <components/config.hpp>
 #include <components/menu.hpp>
+#include <components/weatherPage.hpp>
 #include <components/window.hpp>
 #include <ftxui/component/captured_mouse.hpp>
 #include <ftxui/component/component.hpp>
@@ -11,16 +11,6 @@
 
 using namespace ftxui;
 
-auto getPlainColor() {
-    AnimatedColorOption colorFg;
-    ColorManager& colMan = ColorManager::getInstance();
-    auto tx = colMan.get(ColorType::TEXT);
-    colorFg.inactive = tx;
-    colorFg.enabled = true;
-
-    return colorFg;
-};
-
 int main() {
     auto screen = ScreenInteractive::Fullscreen();
     auto window = WindowComponent(APP_TITLE);
@@ -28,99 +18,8 @@ int main() {
 
     initializeConfig();
 
-    Components availablePages;
-
-    int vSelector = 2;
-
-    auto menuWeatherCity = MenuComponent(
-        {
-            {"Sunny"},
-            {"16 °C"},
-            {"󰁜 10 - 12 km/h"},
-            {" 10%"},
-            {" 10%"},
-        },
-        getPlainColor(), std::nullopt, [&](const EntryState& state) {
-            Element e = text(state.label + "   ");
-            if (state.active && vSelector == 2) {
-                e = text("• " + state.label + " ");
-                e = e | bold;
-            }
-            return e;
-        });
-
-    auto backButtonMenu =
-        MenuComponent({{"Back", [&] { currentTab = 0; }}}, getPlainColor(),
-                      std::nullopt, [&](const EntryState& state) {
-                          Element e =
-                              hbox({text(state.label) | border, filler()});
-                          if (state.active && vSelector == 0) {
-                              e = e | bold | color(Color::Red);
-                          }
-                          return e;
-                      });
-
-    std::string small_sun_ascii = R"(
-     .
-   \ | /
- '-.;;;.-'
--==;;;;;==-
- .-';;;'-.
-   / | \
-     '
-)";
-
-    auto small_ascii_comp = Renderer([&small_sun_ascii] {
-        std::string cur = "";
-        std::vector<Element> v;
-        for (auto c : small_sun_ascii) {
-            if (c == '\n') {
-                if (cur != "")
-                    v.push_back(text(cur));
-                cur = "";
-            } else
-                cur = cur + c;
-        }
-        return hbox({
-            filler() | size(WIDTH, EQUAL, 1),
-            vbox(v),
-            filler() | size(WIDTH, EQUAL, 2),
-        });
-    });
-
-    auto placeholderComp = menuWeatherCity.getComponent();
-
-    auto cityComp = Renderer(placeholderComp, [&] {
-        return hbox({
-            small_ascii_comp->Render(),
-            placeholderComp->Render() | center,
-        });
-    });
-
-    auto cityWindow = WindowComponent("Bucharest");
-    cityWindow.setChild(cityComp);
-    cityComp = cityWindow.getComponent();
-
-    auto cityPage = Container::Vertical(
-        {
-            backButtonMenu.getComponent(),
-            Renderer([] { return filler(); }),
-            Renderer(cityComp,
-                     [&] {
-                         return hbox({filler(), cityComp->Render(), filler()}) |
-                                center;
-                     }) |
-                center,
-            Renderer([] { return filler(); }),
-        },
-        &vSelector);
-
     auto mainMenu = MenuComponent({
-        {"Do Nothing",
-         [&] {
-             currentTab = 1;
-             vSelector = 2;
-         }},
+        {"Do Nothing", [&] { currentTab = 1; }},
         {"Exit", [&screen] { screen.Exit(); }},
     });
     std::string ascii_art = R"(
@@ -195,7 +94,13 @@ int main() {
         });
     });
 
-    availablePages = {mainPage, cityPage};
+    auto weatherPage =
+        WeatherPage("Bucharest", wPage::Status::SUNNY, 16.3,
+                    wPage::WindData({wPage::WindDir::NORTHEAST, 10, 12}), 10,
+                    10, [&] { currentTab = 0; });
+    auto cityPage = weatherPage.getComponent();
+
+    auto availablePages = {mainPage, cityPage};
     auto pages = Container::Tab(availablePages, &currentTab);
 
     window.setChild(pages);

@@ -33,6 +33,7 @@ class MenuComponent {
         std::optional<ftxui::AnimatedColorOption> colorBg = std::nullopt,
         std::optional<menucomp::transformFunc> transformFunc = std::nullopt);
     ftxui::Component getComponent();
+    void updateEntries(std::vector<menucomp::SingleMenuEntry> newEntries);
 
   private:
     void addEntries(std::vector<menucomp::SingleMenuEntry>& newEntries);

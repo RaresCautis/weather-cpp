@@ -28,6 +28,13 @@ void MenuComponent::addEntries(std::vector<SingleMenuEntry>& newEntries) {
     }
 }
 
+void MenuComponent::updateEntries(std::vector<SingleMenuEntry> newEntries) {
+    entries.labels = vector<std::string>();
+
+    for (auto entry : newEntries)
+        entries.labels.push_back(entry.label);
+}
+
 AnimatedColorOption getDefaultColorFg();
 AnimatedColorOption getDefaultColorBg();
 transformFunc getDefaultTransformFunc();
