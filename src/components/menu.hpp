@@ -16,6 +16,7 @@ using transformFunc = std::function<ftxui::Element(const ftxui::EntryState&)>;
 struct SingleMenuEntry {
     std::string label;
     menuCallback callback = [] {};
+    std::string labelName = "";
 };
 
 struct MenuEntries {
@@ -33,7 +34,7 @@ class MenuComponent {
         std::optional<ftxui::AnimatedColorOption> colorBg = std::nullopt,
         std::optional<menucomp::transformFunc> transformFunc = std::nullopt);
     ftxui::Component getComponent();
-    void updateEntries(std::vector<menucomp::SingleMenuEntry> newEntries);
+    void updateEntry(std::string labelName, std::string newLabel);
 
   private:
     void addEntries(std::vector<menucomp::SingleMenuEntry>& newEntries);
@@ -44,6 +45,8 @@ class MenuComponent {
     menucomp::MenuEntries entries;
     int selected;
     ftxui::MenuOption option;
+    // map from labelName to index in entries, not good
+    std::unordered_map<std::string, int> labelEntriesMap;
 };
 
 #endif

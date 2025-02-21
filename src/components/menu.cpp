@@ -25,14 +25,14 @@ void MenuComponent::addEntries(std::vector<SingleMenuEntry>& newEntries) {
     for (auto entry : newEntries) {
         entries.labels.push_back(entry.label);
         entries.callbacks.push_back(entry.callback);
+        if (entry.labelName != "")
+            labelEntriesMap[entry.labelName] = entries.labels.size() - 1;
     }
 }
 
-void MenuComponent::updateEntries(std::vector<SingleMenuEntry> newEntries) {
-    entries.labels = vector<std::string>();
-
-    for (auto entry : newEntries)
-        entries.labels.push_back(entry.label);
+void MenuComponent::updateEntry(std::string labelName, std::string newLabel) {
+    auto index = labelEntriesMap[labelName];
+    entries.labels[index] = newLabel;
 }
 
 AnimatedColorOption getDefaultColorFg();

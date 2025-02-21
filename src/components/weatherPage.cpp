@@ -23,25 +23,13 @@ WeatherPage::WeatherPage(std::string newCityName, wPage::Status newWStatus,
 
     backButton = createBackButton(backCallback, vSelector);
     menuWeatherCity = createMenuWeatherCity();
-
-    stupid = std::thread([this] {
-        std::this_thread::sleep_for(std::chrono::seconds(5));
-        menuWeatherCity->updateEntries({
-            {""},
-            {std::to_string(5) + " °C"},
-            {" " + std::to_string(windData.minSpeed) + " - " +
-             std::to_string(windData.maxSpeed) + " km/h"},
-            {" " + std::to_string(humidity) + "%"},
-            {" " + std::to_string(precipitation) + "%"},
-        });
-    });
 }
 
 std::unordered_map<Status, std::string> statusToString = {
     {Status::SUNNY, "Sunny"},
 };
 
-std::unordered_map<WindDir, std::string> winddirToString = {
+std::unordered_map<WindDir, std::string> windDirToString = {
     {WindDir::NORTHWEST, "󰁛"}, {WindDir::NORTH, "󰁝"},
     {WindDir::NORTHEAST, "󰁜"}, {WindDir::EAST, "󰁔"},
     {WindDir::SOUTHEAST, "󰁃"}, {WindDir::SOUTH, "󰁅"},
@@ -61,7 +49,6 @@ auto getPlainColor() {
 WeatherPage::~WeatherPage() {
     delete (backButton);
     delete (menuWeatherCity);
-    stupid.join();
 }
 
 Component WeatherPage::getComponent() {
@@ -112,20 +99,20 @@ Component WeatherPage::getComponent() {
         {
             backButton->getComponent(),
             Renderer([] { return filler(); }),
-            menuWeatherCity->getComponent(),
-            // Renderer(cityComp,
-            //          [&] {
-            //              auto cw = window(text(cityName),
-            //              cityComp->Render());
-            //
-            //              return hbox({
-            //                         filler(),
-            //                         cw,
-            //                         filler(),
-            //                     }) |
-            //                     center;
-            //          }) |
-            //     center,
+            // menuWeatherCity->getComponent(),
+            Renderer(cityComp,
+                     [&] {
+                         auto weatherWindow =
+                             window(text(cityName), cityComp->Render());
+
+                         return hbox({
+                                    filler(),
+                                    weatherWindow,
+                                    filler(),
+                                }) |
+                                center;
+                     }) |
+                center,
             Renderer([] { return filler(); }),
         },
         &vSelector);
@@ -151,7 +138,7 @@ MenuComponent* WeatherPage::createMenuWeatherCity() {
         {
             {statusToString[wStatus]},
             {std::to_string(temperature) + " °C"},
-            {winddirToString[windData.dir] + " " +
+            {windDirToString[windData.dir] + " " +
              std::to_string(windData.minSpeed) + " - " +
              std::to_string(windData.maxSpeed) + " km/h"},
             {" " + std::to_string(humidity) + "%"},
