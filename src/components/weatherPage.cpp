@@ -36,6 +36,14 @@ std::unordered_map<WindDir, std::string> windDirToString = {
     {WindDir::SOUTHWEST, "󰁂"}, {WindDir::WEST, "󰁍"},
 };
 
+std::unordered_map<LabelName, std::string> LabelToName = {
+    {LabelName::HUMIDITY, "HUMIDITY"},
+    {LabelName::PRECIPITATION, "PRECIPITATION"},
+    {LabelName::TEMPERATURE, "TEMPERATURE"},
+    {LabelName::WIND_DATA, "WIND_DATA"},
+    {LabelName::W_STATUS, "W_STATUS"},
+};
+
 auto getPlainColor() {
     AnimatedColorOption colorFg;
     ColorManager& colMan = ColorManager::getInstance();
@@ -120,6 +128,13 @@ Component WeatherPage::getComponent() {
     return cityPage;
 }
 
+void WeatherPage::updateLabels(
+    std::vector<wPage::WeatherEntry> updatedEntries) {
+    for (auto entry : updatedEntries) {
+        menuWeatherCity->updateEntry(LabelToName[entry.name], entry.value);
+    }
+}
+
 MenuComponent* createBackButton(std::function<void()> backCallback,
                                 int& vSelector) {
     return new MenuComponent(
@@ -136,13 +151,17 @@ MenuComponent* createBackButton(std::function<void()> backCallback,
 MenuComponent* WeatherPage::createMenuWeatherCity() {
     return new MenuComponent(
         {
-            {statusToString[wStatus]},
-            {std::to_string(temperature) + " °C"},
+            {statusToString[wStatus], [] {}, LabelToName[LabelName::W_STATUS]},
+            {std::to_string(temperature) + " °C", [] {},
+             LabelToName[LabelName::TEMPERATURE]},
             {windDirToString[windData.dir] + " " +
-             std::to_string(windData.minSpeed) + " - " +
-             std::to_string(windData.maxSpeed) + " km/h"},
-            {" " + std::to_string(humidity) + "%"},
-            {" " + std::to_string(precipitation) + "%"},
+                 std::to_string(windData.minSpeed) + " - " +
+                 std::to_string(windData.maxSpeed) + " km/h",
+             [] {}, LabelToName[LabelName::WIND_DATA]},
+            {" " + std::to_string(humidity) + "%", [] {},
+             LabelToName[LabelName::HUMIDITY]},
+            {" " + std::to_string(precipitation) + "%", [] {},
+             LabelToName[LabelName::PRECIPITATION]},
         },
         getPlainColor(), std::nullopt, [this](const EntryState& state) {
             Element e = text(state.label + "   ");

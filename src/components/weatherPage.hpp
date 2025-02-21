@@ -26,6 +26,19 @@ struct WindData {
     int maxSpeed;
 };
 
+enum LabelName {
+    W_STATUS,
+    TEMPERATURE,
+    WIND_DATA,
+    HUMIDITY,
+    PRECIPITATION,
+};
+
+struct WeatherEntry {
+    LabelName name;
+    std::string value;
+};
+
 }; // namespace wPage
 
 class WeatherPage {
@@ -34,6 +47,7 @@ class WeatherPage {
                 std::function<void()>);
     ~WeatherPage();
     ftxui::Component getComponent();
+    void updateLabels(std::vector<wPage::WeatherEntry>);
 
   private:
     std::string cityName;
