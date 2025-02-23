@@ -38,6 +38,18 @@ FetchContent_Declare(json
 FetchContent_MakeAvailable(json)
 # ------------------------------------------------------------------------------
 
+# --- Fetch cpr --------------------------------------------------------------
+
+FetchContent_Declare(cpr
+  GIT_REPOSITORY https://github.com/libcpr/cpr
+  GIT_TAG        1.11.0  # Specify the version or branch
+  GIT_PROGRESS   TRUE
+  GIT_SHALLOW    TRUE
+  EXCLUDE_FROM_ALL
+)
+FetchContent_MakeAvailable(cpr)
+# ------------------------------------------------------------------------------
+
 # Add your executable
 add_executable(weather-cpp src/main.cpp)
 target_sources(weather-cpp PRIVATE src/components/menu.cpp)
@@ -55,4 +67,5 @@ target_link_libraries(weather-cpp
   PRIVATE ftxui::dom
   PRIVATE ftxui::component
   PRIVATE nlohmann_json::nlohmann_json
+  PRIVATE cpr::cpr
 )
