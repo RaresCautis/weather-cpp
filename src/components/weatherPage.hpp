@@ -6,11 +6,22 @@
 
 namespace wPage {
 enum Status {
-    SUNNY,
+    CLEAR,
+    PARTLY_CLOUDY,
+    CLOUDY,
+    OVERCAST,
+    FOG,
+    DRIZZLE,
+    LIGHT_RAIN,
+    RAIN,
+    HEAVY_RAIN,
+    LIGHT_SNOW,
+    SNOW,
+    HEAVY_SNOW,
+    THUNDER,
 };
 
 enum WindDir {
-    NORTHWEST,
     NORTH,
     NORTHEAST,
     EAST,
@@ -18,12 +29,12 @@ enum WindDir {
     SOUTH,
     SOUTHWEST,
     WEST,
+    NORTHWEST,
 };
 
 struct WindData {
     WindDir dir;
-    int minSpeed;
-    int maxSpeed;
+    int speed;
 };
 
 enum LabelName {

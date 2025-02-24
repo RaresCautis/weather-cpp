@@ -1,31 +1,16 @@
 #include <components/config.hpp>
 #include <components/menu.hpp>
+#include <components/weatherFetcher.hpp>
 #include <components/weatherPage.hpp>
 #include <components/window.hpp>
-#include <cpr/cpr.h> // move
 #include <ftxui/component/captured_mouse.hpp>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
-#include <nlohmann/json.hpp> // move
 #include <string>
 #include <thread>
 
 using namespace ftxui;
-
-nlohmann::basic_json<> getLondonWeather() { // move
-    auto x = cpr::Get(
-        cpr::Url{"https://api.open-meteo.com/v1/forecast"},
-        cpr::Parameters{
-            {"latitude", "51.5146"},
-            {"longitude", "-0.0761"},
-            {"current", "temperature_2m,relative_humidity_2m,precipitation,"
-                        "weather_code,wind_speed_10m,wind_direction_10m"},
-            {"timeformat", "unixtime"},
-        });
-
-    return nlohmann::json::parse(x.text);
-}
 
 int main() {
     auto screen = ScreenInteractive::Fullscreen();
@@ -110,12 +95,11 @@ int main() {
         });
     });
 
-    auto j = getLondonWeather()["current"]; // move
+    auto j = weatherFetcher::fetchWeather(51.52, -0.08000016); // move
 
-    auto weatherPage = WeatherPage(
-        "London", wPage::Status::SUNNY, j["temperature_2m"],
-        wPage::WindData({wPage::WindDir::NORTHEAST, j["wind_speed_10m"], 12}),
-        j["relative_humidity_2m"], j["precipitation"], [&] { currentTab = 0; });
+    auto weatherPage =
+        WeatherPage("London", j.weatherCode, j.temperature, j.wind, j.humidity,
+                    j.precipitation, [&] { currentTab = 0; }); // move
     auto cityPage = weatherPage.getComponent();
 
     auto availablePages = {mainPage, cityPage};

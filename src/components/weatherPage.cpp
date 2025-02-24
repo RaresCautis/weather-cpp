@@ -26,14 +26,26 @@ WeatherPage::WeatherPage(std::string newCityName, wPage::Status newWStatus,
 }
 
 std::unordered_map<Status, std::string> statusToString = {
-    {Status::SUNNY, "Sunny"},
+    {Status::CLEAR, "Clear"},
+    {Status::PARTLY_CLOUDY, "Partly Cloudy"},
+    {Status::CLOUDY, "Cloudy"},
+    {Status::OVERCAST, "Overcast"},
+    {Status::FOG, "Fog"},
+    {Status::DRIZZLE, "Drizzle"},
+    {Status::LIGHT_RAIN, "Light Rain"},
+    {Status::RAIN, "Rain"},
+    {Status::HEAVY_RAIN, "Heavy Rain"},
+    {Status::LIGHT_SNOW, "Light Snow"},
+    {Status::SNOW, "Snow"},
+    {Status::HEAVY_SNOW, "Heavy Snow"},
+    {Status::THUNDER, "Thunder"},
 };
 
 std::unordered_map<WindDir, std::string> windDirToString = {
-    {WindDir::NORTHWEST, "󰁛"}, {WindDir::NORTH, "󰁝"},
-    {WindDir::NORTHEAST, "󰁜"}, {WindDir::EAST, "󰁔"},
-    {WindDir::SOUTHEAST, "󰁃"}, {WindDir::SOUTH, "󰁅"},
-    {WindDir::SOUTHWEST, "󰁂"}, {WindDir::WEST, "󰁍"},
+    {WindDir::NORTH, "󰁝"}, {WindDir::NORTHEAST, "󰁜"},
+    {WindDir::EAST, "󰁔"},  {WindDir::SOUTHEAST, "󰁃"},
+    {WindDir::SOUTH, "󰁅"}, {WindDir::SOUTHWEST, "󰁂"},
+    {WindDir::WEST, "󰁍"},  {WindDir::NORTHWEST, "󰁛"},
 };
 
 std::unordered_map<LabelName, std::string> LabelToName = {
@@ -148,15 +160,20 @@ MenuComponent* createBackButton(std::function<void()> backCallback,
         });
 }
 
+std::string convertDouble(double d) {
+    auto s = std::to_string(d);
+    auto rounded = s.substr(0, s.find('.') + 2);
+    return rounded;
+}
+
 MenuComponent* WeatherPage::createMenuWeatherCity() {
     return new MenuComponent(
         {
             {statusToString[wStatus], [] {}, LabelToName[LabelName::W_STATUS]},
-            {std::to_string(temperature) + " °C", [] {},
+            {convertDouble(temperature) + " °C", [] {},
              LabelToName[LabelName::TEMPERATURE]},
             {windDirToString[windData.dir] + " " +
-                 std::to_string(windData.minSpeed) + " - " +
-                 std::to_string(windData.maxSpeed) + " km/h",
+                 std::to_string(windData.speed) + " km/h",
              [] {}, LabelToName[LabelName::WIND_DATA]},
             {" " + std::to_string(humidity) + "%", [] {},
              LabelToName[LabelName::HUMIDITY]},
