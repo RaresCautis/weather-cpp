@@ -55,8 +55,7 @@ struct WeatherEntry {
 
 class WeatherPage {
   public:
-    WeatherPage(std::string, wPage::Status, double, wPage::WindData, int, int,
-                std::function<void()>);
+    WeatherPage(std::function<void()>);
     ~WeatherPage();
     ftxui::Component getComponent();
     void updateWeatherPage(std::string, wPage::Status, double, wPage::WindData,

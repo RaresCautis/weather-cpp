@@ -21,13 +21,11 @@ int main() {
     Component mainComponent;
 
     initializeConfig();
-    // auto j = weatherFetcher::fetchWeather(51.52, -0.08000016); // move
-    weatherFetcher::weatherData j;
 
     MenuComponent* mainMenuPointer;
     WeatherPage* weatherPagePointer;
 
-    std::function<void(citySearch::CityData)> hihi =
+    std::function<void(citySearch::CityData)> citySearchCallback =
         [&mainMenuPointer, &currentTab,
          &weatherPagePointer](citySearch::CityData city) {
             mainMenuPointer->addEntry(
@@ -46,15 +44,15 @@ int main() {
         };
     ;
 
-    CitySearch xdsk =
-        CitySearch(hihi, [&mainComponent] { mainComponent->TakeFocus(); });
-    auto tabtabtab = xdsk.getComponent();
+    CitySearch citySearch = CitySearch(
+        citySearchCallback, [&mainComponent] { mainComponent->TakeFocus(); });
+    auto citySearchComponent = citySearch.getComponent();
 
     auto mainMenu = MenuComponent({
         {"Add Location",
-         [&xdsk] {
-             xdsk.resetComponent();
-             xdsk.toggleVisible();
+         [&citySearch] {
+             citySearch.resetComponent();
+             citySearch.toggleVisible();
          }},
         {"Exit", [&screen] { screen.Exit(); }},
     });
@@ -133,9 +131,7 @@ int main() {
         });
     });
 
-    auto weatherPage =
-        WeatherPage("London", j.weatherCode, j.temperature, j.wind, j.humidity,
-                    j.precipitation, [&] { currentTab = 0; }); // move
+    auto weatherPage = WeatherPage([&] { currentTab = 0; });
     auto cityPage = weatherPage.getComponent();
     weatherPagePointer = &weatherPage;
 
@@ -145,10 +141,11 @@ int main() {
     mainWindow.setChild(pages);
     mainComponent = mainWindow.getComponent();
 
-    auto xd = Container::Stacked({tabtabtab, mainComponent}); // fix this
+    auto stackedApp =
+        Container::Stacked({citySearchComponent, mainComponent}); // fix this
     mainComponent->TakeFocus();
 
-    screen.Loop(xd);
+    screen.Loop(stackedApp);
 
     quitAnimationThread = true;
     timerThread.join();

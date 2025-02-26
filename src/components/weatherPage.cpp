@@ -67,17 +67,7 @@ std::string processPrecipitation(int precipitation) {
 
 MenuComponent* createBackButton(std::function<void()>, int&);
 
-WeatherPage::WeatherPage(std::string newCityName, wPage::Status newWStatus,
-                         double newTemperature, wPage::WindData newWindData,
-                         int newHumidity, int newPrecipitation,
-                         std::function<void()> backCallback) {
-    cityName = newCityName;
-    wStatus = newWStatus;
-    art = weatherPageArt::statusToArt.at(wStatus);
-    temperature = newTemperature;
-    windData = newWindData;
-    humidity = newHumidity;
-    precipitation = newPrecipitation;
+WeatherPage::WeatherPage(std::function<void()> backCallback) {
     vSelector = 0;
 
     backButton = createBackButton(backCallback, vSelector);
