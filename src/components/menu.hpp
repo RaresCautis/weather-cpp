@@ -35,6 +35,7 @@ class MenuComponent {
         std::optional<menucomp::transformFunc> transformFunc = std::nullopt);
     ftxui::Component getComponent();
     void updateEntry(std::string labelName, std::string newLabel);
+    void updateLabels(std::vector<std::string>&, bool);
 
   private:
     void addEntries(std::vector<menucomp::SingleMenuEntry>& newEntries);

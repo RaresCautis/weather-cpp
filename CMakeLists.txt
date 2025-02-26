@@ -60,6 +60,7 @@ target_sources(weather-cpp PRIVATE src/components/config.cpp)
 target_sources(weather-cpp PRIVATE src/components/colorManager.cpp)
 target_sources(weather-cpp PRIVATE src/components/weatherFetcher.cpp)
 target_sources(weather-cpp PRIVATE src/components/weatherPage.cpp)
+target_sources(weather-cpp PRIVATE src/components/citySearch.cpp)
 target_include_directories(weather-cpp PRIVATE src src/components)
 
 # Link libraries

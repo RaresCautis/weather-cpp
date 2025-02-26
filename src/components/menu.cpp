@@ -35,6 +35,17 @@ void MenuComponent::updateEntry(std::string labelName, std::string newLabel) {
     entries.labels[index] = newLabel;
 }
 
+void MenuComponent::updateLabels(std::vector<string>& newLabels,
+                                 bool resetSelected) {
+    entries.labels.clear();
+    for (auto label : newLabels) {
+        entries.labels.push_back(label);
+    }
+
+    if (resetSelected)
+        selected = 0;
+}
+
 AnimatedColorOption getDefaultColorFg();
 AnimatedColorOption getDefaultColorBg();
 transformFunc getDefaultTransformFunc();
