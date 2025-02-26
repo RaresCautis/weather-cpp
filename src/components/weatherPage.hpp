@@ -65,6 +65,7 @@ class WeatherPage {
 
   private:
     std::string cityName;
+    std::string art;
     wPage::Status wStatus;
     double temperature;
     wPage::WindData windData;

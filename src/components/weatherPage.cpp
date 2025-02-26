@@ -2,6 +2,7 @@
 #include <menu.hpp>
 #include <optional>
 #include <weatherPage.hpp>
+#include <weatherPageArt.hpp>
 #include <window.hpp>
 
 using namespace wPage;
@@ -72,6 +73,7 @@ WeatherPage::WeatherPage(std::string newCityName, wPage::Status newWStatus,
                          std::function<void()> backCallback) {
     cityName = newCityName;
     wStatus = newWStatus;
+    art = weatherPageArt::statusToArt.at(wStatus);
     temperature = newTemperature;
     windData = newWindData;
     humidity = newHumidity;
@@ -92,6 +94,8 @@ void WeatherPage::updateWeatherPage(std::string newCityName,
 
     menuWeatherCity->updateEntry(LabelToName[W_STATUS],
                                  processWeatherStatus(newWStatus));
+    art = weatherPageArt::statusToArt.at(newWStatus);
+
     menuWeatherCity->updateEntry(LabelToName[TEMPERATURE],
                                  processTemperature(newTemperature));
     menuWeatherCity->updateEntry(LabelToName[WIND_DATA],
@@ -119,20 +123,10 @@ WeatherPage::~WeatherPage() {
 
 Component WeatherPage::getComponent() {
 
-    std::string small_sun_ascii = R"(
-     .
-   \ | /
- '-.;;;.-'
--==;;;;;==-
- .-';;;'-.
-   / | \
-     '
-)";
-
-    auto small_ascii_comp = Renderer([small_sun_ascii] {
+    auto small_ascii_comp = Renderer([this] {
         std::string cur = "";
         std::vector<Element> v;
-        for (auto c : small_sun_ascii) {
+        for (auto c : art) {
             if (c == '\n') {
                 if (cur != "")
                     v.push_back(text(cur));
