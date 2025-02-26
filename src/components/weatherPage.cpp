@@ -1,4 +1,5 @@
 #include <colorManager.hpp>
+#include <ftxui/dom/elements.hpp>
 #include <menu.hpp>
 #include <optional>
 #include <weatherPage.hpp>
@@ -10,7 +11,7 @@ using namespace ftxui;
 
 std::unordered_map<Status, std::string> statusToString = {
     {Status::CLEAR, "Clear"},
-    {Status::PARTLY_CLOUDY, "Partly Cloudy"},
+    {Status::PARTLY_CLOUDY, "Part Cloudy"},
     {Status::CLOUDY, "Cloudy"},
     {Status::OVERCAST, "Overcast"},
     {Status::FOG, "Fog"},
@@ -58,7 +59,7 @@ std::string processWind(wPage::WindData windData) {
 }
 
 std::string processHumidity(int humidity) {
-    return " " + std::to_string(humidity) + "%";
+    return " " + std::to_string(humidity) + "%";
 }
 
 std::string processPrecipitation(int precipitation) {
@@ -136,7 +137,7 @@ Component WeatherPage::getComponent() {
     cityComp = Renderer(placeholderComp, [placeholderComp, small_ascii_comp] {
         return hbox({
             small_ascii_comp->Render(),
-            placeholderComp->Render() | center,
+            placeholderComp->Render() | size(WIDTH, EQUAL, 14) | center,
         });
     });
 
