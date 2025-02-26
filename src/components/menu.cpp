@@ -46,6 +46,8 @@ void MenuComponent::updateLabels(std::vector<string>& newLabels,
         selected = 0;
 }
 
+int MenuComponent::getSelected() { return selected; }
+
 AnimatedColorOption getDefaultColorFg();
 AnimatedColorOption getDefaultColorBg();
 transformFunc getDefaultTransformFunc();

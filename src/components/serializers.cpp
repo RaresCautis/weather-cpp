@@ -111,3 +111,26 @@ nlohmann::adl_serializer<weatherFetcher::weatherData>::from_json(
 
     return data;
 }
+
+std::vector<citySearch::CityData>
+nlohmann::adl_serializer<std::vector<citySearch::CityData>>::from_json(
+    const nlohmann::json& citiesJson) {
+
+    std::vector<citySearch::CityData> returnCities;
+
+    if (!citiesJson.contains("results"))
+        return returnCities;
+
+    for (auto city : citiesJson.at("results")) {
+        std::string name = city.at("name");
+        std::string country = "None";
+        if (city.contains("country"))
+            country = city.at("country");
+        double latitude = city.at("latitude");
+        double longitude = city.at("longitude");
+
+        returnCities.push_back({name, country, latitude, longitude});
+    }
+
+    return returnCities;
+}

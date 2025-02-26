@@ -1,6 +1,7 @@
 #ifndef WEATHERFETCHER_H
 #define WEATHERFETCHER_H
 
+#include <citySearch.hpp>
 #include <weatherPage.hpp>
 
 namespace weatherFetcher {
@@ -13,6 +14,7 @@ struct weatherData {
 };
 
 weatherData fetchWeather(double, double);
+std::vector<citySearch::CityData> fetchCities(std::string&);
 }; // namespace weatherFetcher
 
 #endif

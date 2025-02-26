@@ -36,6 +36,7 @@ class MenuComponent {
     ftxui::Component getComponent();
     void updateEntry(std::string labelName, std::string newLabel);
     void updateLabels(std::vector<std::string>&, bool);
+    int getSelected();
 
   private:
     void addEntries(std::vector<menucomp::SingleMenuEntry>& newEntries);

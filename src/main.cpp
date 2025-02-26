@@ -31,7 +31,11 @@ int main() {
     auto mainMenu = MenuComponent({
         {"Do Nothing", [&] { currentTab = 1; }},
         {"Exit", [&screen] { screen.Exit(); }},
-        {"HAHA", [&xdsk] { xdsk.toggleVisible(); }},
+        {"HAHA",
+         [&xdsk] {
+             xdsk.resetComponent();
+             xdsk.toggleVisible();
+         }},
     });
     std::string ascii_art = R"(
                 |

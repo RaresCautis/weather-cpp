@@ -21,6 +21,7 @@ class CitySearch {
     CitySearch(citySearch::CityData*, std::function<void()>);
     void toggleVisible();
     ftxui::Component getComponent();
+    void resetComponent();
     ~CitySearch();
 
   private:
@@ -29,6 +30,9 @@ class CitySearch {
     ftxui::Component citySearchComponent;
     ftxui::Component searchInputComponent;
     ftxui::Component inputBox;
+    std::string searchContent;
+    std::atomic<bool> isSearching;
+    std::atomic<time_t> searchTime;
     MenuComponent* searchResultsMenu;
     ftxui::Component searchResultsMenuComponent;
     ftxui::Component searchResults;
@@ -37,10 +41,12 @@ class CitySearch {
     bool isVisible = false;
     std::function<void()> changeFocus;
     ftxui::Color textCol;
+    std::thread searchThread;
 
     void createSearchInput();
     void createSearchResults();
     void createCitySearch();
+    void startSearchThread();
 };
 
 #endif

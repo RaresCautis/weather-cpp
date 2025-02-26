@@ -19,4 +19,8 @@ template <> struct nlohmann::adl_serializer<weatherFetcher::weatherData> {
     static weatherFetcher::weatherData from_json(const nlohmann::json&);
 };
 
+template <> struct nlohmann::adl_serializer<std::vector<citySearch::CityData>> {
+    static std::vector<citySearch::CityData> from_json(const nlohmann::json&);
+};
+
 #endif
