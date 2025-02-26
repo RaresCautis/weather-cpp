@@ -3,6 +3,7 @@
 
 #include <ftxui/component/component.hpp>
 #include <menu.hpp>
+#include <window.hpp>
 
 namespace wPage {
 enum Status {
@@ -58,6 +59,8 @@ class WeatherPage {
                 std::function<void()>);
     ~WeatherPage();
     ftxui::Component getComponent();
+    void updateWeatherPage(std::string, wPage::Status, double, wPage::WindData,
+                           int, int);
     void updateLabels(std::vector<wPage::WeatherEntry>);
 
   private:

@@ -7,24 +7,6 @@
 using namespace wPage;
 using namespace ftxui;
 
-MenuComponent* createBackButton(std::function<void()>, int&);
-
-WeatherPage::WeatherPage(std::string newCityName, wPage::Status newWStatus,
-                         double newTemperature, wPage::WindData newWindData,
-                         int newHumidity, int newPrecipitation,
-                         std::function<void()> backCallback) {
-    cityName = newCityName;
-    wStatus = newWStatus;
-    temperature = newTemperature;
-    windData = newWindData;
-    humidity = newHumidity;
-    precipitation = newPrecipitation;
-    vSelector = 0;
-
-    backButton = createBackButton(backCallback, vSelector);
-    menuWeatherCity = createMenuWeatherCity();
-}
-
 std::unordered_map<Status, std::string> statusToString = {
     {Status::CLEAR, "Clear"},
     {Status::PARTLY_CLOUDY, "Partly Cloudy"},
@@ -55,6 +37,70 @@ std::unordered_map<LabelName, std::string> LabelToName = {
     {LabelName::WIND_DATA, "WIND_DATA"},
     {LabelName::W_STATUS, "W_STATUS"},
 };
+
+std::string convertDouble(double d) {
+    auto s = std::to_string(d);
+    auto rounded = s.substr(0, s.find('.') + 2);
+    return rounded;
+}
+
+std::string processWeatherStatus(wPage::Status wStatus) {
+    return statusToString[wStatus];
+}
+std::string processTemperature(double temperature) {
+    return convertDouble(temperature) + " °C";
+}
+
+std::string processWind(wPage::WindData windData) {
+    return windDirToString[windData.dir] + " " +
+           std::to_string(windData.speed) + " km/h";
+}
+
+std::string processHumidity(int humidity) {
+    return " " + std::to_string(humidity) + "%";
+}
+
+std::string processPrecipitation(int precipitation) {
+    return " " + std::to_string(precipitation) + "%";
+}
+
+MenuComponent* createBackButton(std::function<void()>, int&);
+
+WeatherPage::WeatherPage(std::string newCityName, wPage::Status newWStatus,
+                         double newTemperature, wPage::WindData newWindData,
+                         int newHumidity, int newPrecipitation,
+                         std::function<void()> backCallback) {
+    cityName = newCityName;
+    wStatus = newWStatus;
+    temperature = newTemperature;
+    windData = newWindData;
+    humidity = newHumidity;
+    precipitation = newPrecipitation;
+    vSelector = 0;
+
+    backButton = createBackButton(backCallback, vSelector);
+    menuWeatherCity = createMenuWeatherCity();
+}
+
+void WeatherPage::updateWeatherPage(std::string newCityName,
+                                    wPage::Status newWStatus,
+                                    double newTemperature,
+                                    wPage::WindData newWindData,
+                                    int newHumidity, int newPrecipitation) {
+
+    cityName = newCityName;
+
+    menuWeatherCity->updateEntry(LabelToName[W_STATUS],
+                                 processWeatherStatus(newWStatus));
+    menuWeatherCity->updateEntry(LabelToName[TEMPERATURE],
+                                 processTemperature(newTemperature));
+    menuWeatherCity->updateEntry(LabelToName[WIND_DATA],
+                                 processWind(newWindData));
+    menuWeatherCity->updateEntry(LabelToName[HUMIDITY],
+                                 processHumidity(newHumidity));
+    menuWeatherCity->updateEntry(LabelToName[PRECIPITATION],
+                                 processPrecipitation(newPrecipitation));
+}
 
 auto getPlainColor() {
     AnimatedColorOption colorFg;
@@ -110,9 +156,6 @@ Component WeatherPage::getComponent() {
         });
     });
 
-    auto cityWindow = WindowComponent(cityName);
-    cityWindow.setChild(cityComp);
-
     vSelector = 0;
 
     auto cityPage = Container::Vertical(
@@ -122,8 +165,8 @@ Component WeatherPage::getComponent() {
             // menuWeatherCity->getComponent(),
             Renderer(cityComp,
                      [&] {
-                         auto weatherWindow =
-                             window(text(cityName), cityComp->Render());
+                         auto weatherWindow = window(text("|" + cityName + "|"),
+                                                     cityComp->Render());
 
                          return hbox({
                                     filler(),
@@ -160,25 +203,34 @@ MenuComponent* createBackButton(std::function<void()> backCallback,
         });
 }
 
-std::string convertDouble(double d) {
-    auto s = std::to_string(d);
-    auto rounded = s.substr(0, s.find('.') + 2);
-    return rounded;
-}
-
 MenuComponent* WeatherPage::createMenuWeatherCity() {
     return new MenuComponent(
         {
-            {statusToString[wStatus], [] {}, LabelToName[LabelName::W_STATUS]},
-            {convertDouble(temperature) + " °C", [] {},
-             LabelToName[LabelName::TEMPERATURE]},
-            {windDirToString[windData.dir] + " " +
-                 std::to_string(windData.speed) + " km/h",
-             [] {}, LabelToName[LabelName::WIND_DATA]},
-            {" " + std::to_string(humidity) + "%", [] {},
-             LabelToName[LabelName::HUMIDITY]},
-            {" " + std::to_string(precipitation) + "%", [] {},
-             LabelToName[LabelName::PRECIPITATION]},
+            {
+                processWeatherStatus(wStatus),
+                [] {},
+                LabelToName[LabelName::W_STATUS],
+            },
+            {
+                processTemperature(temperature),
+                [] {},
+                LabelToName[LabelName::TEMPERATURE],
+            },
+            {
+                processWind(windData),
+                [] {},
+                LabelToName[LabelName::WIND_DATA],
+            },
+            {
+                processHumidity(humidity),
+                [] {},
+                LabelToName[LabelName::HUMIDITY],
+            },
+            {
+                processPrecipitation(precipitation),
+                [] {},
+                LabelToName[LabelName::PRECIPITATION],
+            },
         },
         getPlainColor(), std::nullopt, [this](const EntryState& state) {
             Element e = text(state.label + "   ");

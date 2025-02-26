@@ -30,6 +30,22 @@ void MenuComponent::addEntries(std::vector<SingleMenuEntry>& newEntries) {
     }
 }
 
+void MenuComponent::addEntry(menucomp::SingleMenuEntry newEntry, int index) {
+    if (index > entries.labels.size())
+        throw std::invalid_argument("addEntry index out of bounds");
+
+    for (auto mapEntry : labelEntriesMap) {
+        if (mapEntry.second >= index)
+            labelEntriesMap[mapEntry.first]++;
+    }
+
+    entries.labels.insert(entries.labels.begin() + index, newEntry.label);
+    entries.callbacks.insert(entries.callbacks.begin() + index,
+                             newEntry.callback);
+    if (newEntry.labelName != "")
+        labelEntriesMap[newEntry.labelName] = index;
+}
+
 void MenuComponent::updateEntry(std::string labelName, std::string newLabel) {
     auto index = labelEntriesMap[labelName];
     entries.labels[index] = newLabel;

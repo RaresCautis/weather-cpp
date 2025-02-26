@@ -18,14 +18,15 @@ struct CityData {
 
 class CitySearch {
   public:
-    CitySearch(citySearch::CityData*, std::function<void()>);
+    CitySearch(std::function<void(citySearch::CityData)>,
+               std::function<void()>);
     void toggleVisible();
     ftxui::Component getComponent();
     void resetComponent();
     ~CitySearch();
 
   private:
-    citySearch::CityData* returnCity;
+    std::function<void(citySearch::CityData)> selectCallback;
     std::vector<citySearch::CityData> foundCities;
     ftxui::Component citySearchComponent;
     ftxui::Component searchInputComponent;

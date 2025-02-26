@@ -21,22 +21,46 @@ int main() {
     Component mainComponent;
 
     initializeConfig();
+    // auto j = weatherFetcher::fetchWeather(51.52, -0.08000016); // move
+    weatherFetcher::weatherData j;
 
-    citySearch::CityData hihi;
+    MenuComponent* mainMenuPointer;
+    WeatherPage* weatherPagePointer;
+
+    std::function<void(citySearch::CityData)> hihi =
+        [&mainMenuPointer, &currentTab,
+         &weatherPagePointer](citySearch::CityData city) {
+            mainMenuPointer->addEntry(
+                {city.name,
+                 [mainMenuPointer, city, weatherPagePointer, &currentTab] {
+                     auto j = weatherFetcher::fetchWeather(
+                         city.latitude, city.longitude); // move
+
+                     weatherPagePointer->updateWeatherPage(
+                         city.name, j.weatherCode, j.temperature, j.wind,
+                         j.humidity, j.precipitation);
+
+                     currentTab = 1;
+                 }},
+                0);
+        };
+    ;
 
     CitySearch xdsk =
-        CitySearch(&hihi, [&mainComponent] { mainComponent->TakeFocus(); });
+        CitySearch(hihi, [&mainComponent] { mainComponent->TakeFocus(); });
     auto tabtabtab = xdsk.getComponent();
 
     auto mainMenu = MenuComponent({
-        {"Do Nothing", [&] { currentTab = 1; }},
-        {"Exit", [&screen] { screen.Exit(); }},
-        {"HAHA",
+        {"Add Location",
          [&xdsk] {
              xdsk.resetComponent();
              xdsk.toggleVisible();
          }},
+        {"Exit", [&screen] { screen.Exit(); }},
     });
+
+    mainMenuPointer = &mainMenu;
+
     std::string ascii_art = R"(
                 |
                 |
@@ -75,9 +99,9 @@ int main() {
     std::thread timerThread(
         [&ascii_art, &ascii_art2, &aux, &screen, &quitAnimationThread] {
             while (!quitAnimationThread) {
-                // aux = ascii_art;
-                // ascii_art = ascii_art2;
-                // ascii_art2 = aux;
+                aux = ascii_art;
+                ascii_art = ascii_art2;
+                ascii_art2 = aux;
 
                 screen.PostEvent(Event::Custom);
 
@@ -109,13 +133,11 @@ int main() {
         });
     });
 
-    // auto j = weatherFetcher::fetchWeather(51.52, -0.08000016); // move
-    weatherFetcher::weatherData j;
-
     auto weatherPage =
         WeatherPage("London", j.weatherCode, j.temperature, j.wind, j.humidity,
                     j.precipitation, [&] { currentTab = 0; }); // move
     auto cityPage = weatherPage.getComponent();
+    weatherPagePointer = &weatherPage;
 
     auto availablePages = {mainPage, cityPage};
     auto pages = Container::Tab(availablePages, &currentTab);

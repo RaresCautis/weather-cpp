@@ -6,6 +6,7 @@
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/string.hpp>
+#include <map>
 #include <optional>
 
 namespace menucomp {
@@ -35,6 +36,7 @@ class MenuComponent {
         std::optional<menucomp::transformFunc> transformFunc = std::nullopt);
     ftxui::Component getComponent();
     void updateEntry(std::string labelName, std::string newLabel);
+    void addEntry(menucomp::SingleMenuEntry, int);
     void updateLabels(std::vector<std::string>&, bool);
     int getSelected();
 
@@ -48,7 +50,7 @@ class MenuComponent {
     int selected;
     ftxui::MenuOption option;
     // map from labelName to index in entries, not good
-    std::unordered_map<std::string, int> labelEntriesMap;
+    std::map<std::string, int> labelEntriesMap;
 };
 
 #endif

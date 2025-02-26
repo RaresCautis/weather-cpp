@@ -13,9 +13,11 @@ void updateSearchTime(std::atomic<time_t>& sTime) {
     sTime = std::time(nullptr) + 1;
 }
 
-CitySearch::CitySearch(citySearch::CityData* newReturnCity,
-                       std::function<void()> newChangeFocus) {
-    returnCity = newReturnCity;
+CitySearch::CitySearch(
+    std::function<void(citySearch::CityData)> newSelectCallback,
+    std::function<void()> newChangeFocus) {
+
+    selectCallback = newSelectCallback;
     changeFocus = newChangeFocus;
 
     ColorManager& colMan = ColorManager::getInstance();
@@ -143,7 +145,7 @@ void CitySearch::createSearchResults() {
             int selected = searchResultsMenu->getSelected();
 
             if (selected >= 0 && selected < foundCities.size()) {
-                *returnCity = foundCities[selected];
+                selectCallback(foundCities[selected]);
                 toggleVisible();
             }
 
