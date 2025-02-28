@@ -1,6 +1,7 @@
 #include <chrono>
 #include <citySearch.hpp>
 #include <colorManager.hpp>
+#include <config.hpp>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/component_options.hpp>
 #include <ftxui/screen/color.hpp>
@@ -186,11 +187,13 @@ void CitySearch::createCitySearch() {
     citySearchComponent |= Maybe(&isVisible);
 }
 
-std::string formatCityName(std::string name) {
-    if (name.length() > 25) {
-        name = name.substr(0, 22) + "...";
+void formatCityName(citySearch::CityData& city) {
+    if (city.name.length() > 23) {
+        city.name = city.name.substr(0, 20) + "...";
     }
-    return name;
+
+    if (countryToFlag.find(city.country) != countryToFlag.end())
+        city.name = countryToFlag[city.country] + " " + city.name;
 }
 
 void CitySearch::startSearchThread() {
@@ -226,8 +229,9 @@ void CitySearch::startSearchThread() {
 
         std::vector<std::string> cityNames;
 
-        for (auto city : returnedCitites) {
-            cityNames.push_back(formatCityName(city.name));
+        for (auto& city : returnedCitites) {
+            formatCityName(city);
+            cityNames.push_back(city.name);
         }
         isSearching = false;
         loadingAnimationThread.join();

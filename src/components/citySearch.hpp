@@ -26,7 +26,8 @@ class CitySearch {
     ~CitySearch();
 
   private:
-    std::function<void(citySearch::CityData)> selectCallback;
+    std::function<void(citySearch::CityData)>
+        selectCallback; // Need to remove some of the attrs
     std::vector<citySearch::CityData> foundCities;
     ftxui::Component citySearchComponent;
     ftxui::Component searchInputComponent;
